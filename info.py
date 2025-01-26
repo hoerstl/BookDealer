@@ -1,7 +1,7 @@
 import requests
 retailerInformation = {
     "Worthless Doorstops/Paperweights": {
-        "minimumOrder": 0,
+        "minimumOrder": 1,
         "id": 0,
         "allowsBulk": True
     }
@@ -38,7 +38,7 @@ def getISBNRetailData(isbn):
         "title": json["book"]["title"], 
         "price": 0, 
         "retailer": "Worthless Doorstops/Paperweights", 
-        "minimumOrder": 0,
+        "minimumOrder": 1,
         "imageURL": "",
         "retailerURL": "",
         }]

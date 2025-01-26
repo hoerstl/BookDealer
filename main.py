@@ -71,13 +71,14 @@ def main():
     center = xl.styles.Alignment(horizontal="center")
     bold = xl.styles.Font(bold=True)
     red_fill = xl.styles.PatternFill(start_color="FF3F3F", end_color="FF3F3F", fill_type="solid")
+    orange_fill = xl.styles.PatternFill(start_color="F0904E", end_color="F0904E", fill_type="solid")
     green_fill = xl.styles.PatternFill(start_color="70AD47", end_color="70AD47", fill_type="solid")
 
     grandTotal = 0
     openColumn = 1
     groupingWidth = 3
 
-    for retailer, booksToSell in sorted(sellingGroups.items(), reverse=True, key=lambda e: sum(b["price"] for b in e[1])):
+    for retailer, booksToSell in sorted(sorted(sellingGroups.items(), reverse=True, key=lambda e: sum(b["price"] for b in e[1])), reverse=True, key=lambda e: retailerInformation[e[0]]["minimumOrder"] <= sum(b["price"] for b in e[1])):
         openRow = 6
         sheet.merge_cells(start_column=openColumn, start_row=openRow, end_column=openColumn+groupingWidth-1, end_row=openRow)
 
@@ -88,6 +89,7 @@ def main():
 
         # Retailer title
         sheet.cell(row=openRow, column=openColumn).value = retailer
+        if retailer == "Worthless Doorstops/Paperweights": sheet.cell(row=openRow, column=openColumn).fill = orange_fill
         #sheet.cell(row=openRow, column=openColumn).hyperlink = 
         sheet.cell(row=openRow, column=openColumn).alignment = center
         sheet.cell(row=openRow, column=openColumn).font = xl.styles.Font(bold=True, size=12)
@@ -167,7 +169,7 @@ def main():
     sheet.cell(row=3, column=1).value = grandTotal
 
     wb.save(filename=excel_filepath)
-    print("It's done and available in the excel file sheet")
+    print("It's done and available in Output sheet of the excel file")
     print("You're welcome <3")
 
 
