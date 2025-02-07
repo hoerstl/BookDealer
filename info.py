@@ -22,6 +22,7 @@ def getISBNRetailData(isbn):
         retailData.append({
             "isbn": isbn,
             "title": json["book"]["title"],
+            "slug": json["book"]["slug"],
             "price": price["price"],
             "retailer": price["vendor"]["name"],
             "minimumOrder": price["vendor"]["minimumOrder"],
@@ -35,7 +36,8 @@ def getISBNRetailData(isbn):
 
     retailData = retailData or [{
         "isbn": isbn, 
-        "title": json["book"]["title"], 
+        "title": json["book"]["title"],
+        "slug": json["book"]["slug"],
         "price": 0, 
         "retailer": "Worthless Doorstops/Paperweights", 
         "minimumOrder": 1,

@@ -10,11 +10,11 @@ def main():
     isbns = []
     if usingExcelSheet:
         # Assume its a path to an Excel file
-        excel_filepath = isbnData.strip('"').strip("'")
+        excel_filepath = isbnData.strip('"').strip("'")    
         wb = xl.open(excel_filepath)
-        for sheetName in ["Sheet", "Sheet1", "Input"]:
+        for sheetName in ["Input", "Sheet", "Sheet1"]:
             try:
-                sheet = wb["Sheet"]
+                sheet = wb[sheetName]
                 break
             except Exception:
                 pass
@@ -85,7 +85,7 @@ def main():
         # Column Dimensions
         sheet.column_dimensions[xl.utils.get_column_letter(openColumn)].width = 20
         sheet.column_dimensions[xl.utils.get_column_letter(openColumn+1)].width = 15
-        sheet.column_dimensions[xl.utils.get_column_letter(openColumn+2)].width = 7
+        sheet.column_dimensions[xl.utils.get_column_letter(openColumn+2)].width = 10
 
         # Retailer title
         sheet.cell(row=openRow, column=openColumn).value = retailer
@@ -111,11 +111,13 @@ def main():
         for data in booksToSell:
             # Book Title Cell
             sheet.cell(row=openRow, column=openColumn).value = data["title"]
-            sheet.cell(row=openRow, column=openColumn).hyperlink = data["imageURL"]
+            sheet.cell(row=openRow, column=openColumn).hyperlink = f"https://bookscouter.com/book/{data['isbn']}-{data['slug']}?type=sell"
+            
 
             # ISBN Cell
             sheet.cell(row=openRow, column=openColumn+1).style = integer_style
             sheet.cell(row=openRow, column=openColumn+1).value = data["isbn"]
+            #sheet.cell(row=openRow, column=openColumn+1).hyperlink = data["imageURL"]
 
             # Price Cell
             sheet.cell(row=openRow, column=openColumn+2).style = currency_style
@@ -168,9 +170,15 @@ def main():
     sheet.cell(row=3, column=1).alignment = center
     sheet.cell(row=3, column=1).value = grandTotal
 
-    wb.save(filename=excel_filepath)
-    print("It's done and available in Output sheet of the excel file")
-    print("You're welcome <3")
+    while True:
+        try:
+            wb.save(filename=excel_filepath)
+            break
+        except PermissionError:
+            input("Make sure the file is closed ❎. We got a permission error when trying to save the file. Press enter to try again.")
+    print("")
+    print("It's done and available in Output sheet of the excel file 📁")
+    print("You're welcome 💗")
 
 
 
