@@ -16,6 +16,14 @@ def getISBNRetailData(isbn):
     data = requests.get(f"https://api.bookscouter.com/v4/prices/sell/{isbn}")
     json = data.json()
     retailData = []
+    for i in range(10):
+        if "prices" in json:
+            break
+        data = requests.get(f"https://api.bookscouter.com/v4/prices/sell/{isbn}")
+        json = data.json()
+    else:
+        raise ValueError(f"ISBN: {isbn} was not found")
+    
     for price in json["prices"]:
         if price["price"] == 0:
             break

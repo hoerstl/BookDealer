@@ -2,6 +2,7 @@ import os
 import openpyxl as xl
 from collections import defaultdict
 from info import getISBNRetailData, retailerInformation
+import time
 
 def main():
     print("Welcome to the python tool which helps you sell your textbooks quickly for maximum profit!💰🪙 💴")
@@ -30,7 +31,18 @@ def main():
 
 
     # Group each book with its best selling website
-    retailData = {isbn: getISBNRetailData(isbn) for isbn in isbns}
+    print(f"ISBNs read successfully. Search will finish in about {len(isbns)//60} and {len(isbns)%60} seconds...")
+    retailData = {}
+    for isbn in isbns:
+        try:
+            data = getISBNRetailData(isbn)
+            retailData[isbn] = data
+        except ValueError as e:
+            print(e)
+        time.sleep(1)
+        
+
+
     sellingGroups = defaultdict(list)
     for isbn in isbns:
         data = retailData[isbn]
@@ -40,7 +52,7 @@ def main():
     # Create the output excel document
     if not usingExcelSheet:
         wb = xl.Workbook()
-        excel_filepath = input("Please enter the filepath you'd like to save your output to:\n")
+        excel_filepath = input("Please enter the filepath you'd like to save your output to:\n").strip('"').strip("'")
         if excel_filepath[-5:] != ".xlsx":
             excel_filepath = os.path.join(excel_filepath, "bookdealer.xlsx")
         wb.save(filename=excel_filepath)
